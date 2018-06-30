@@ -1,7 +1,15 @@
 import SHA256 from "crypto-js/sha256";
 
 /*
-*/
+ * Why need pendingTransactions: because we create blocks
+ * in a specfic interval.
+ *
+ * EX: Bitcoin: in 10 minutes, only on block can be created.
+ *
+ * all transactions made in between are stored in the
+ * pendingTransactions collection.
+ *
+ */
 class Transaction {
     constructor(fromAddress, toAddress, amount) {
         this.fromAddress = fromAddress;
@@ -20,7 +28,7 @@ class Block {
     }
 
     calculateHash() {
-        return SHA256(this.index + this.prevHash + this.timeStamp + JSON.stringify(this.data) + this.nonce).toString();
+        return SHA256(this.index + this.prevHash + this.timeStamp + JSON.stringify(this.transactions) + this.nonce).toString();
     }
 
     mineBlock(difficulty) {
@@ -36,6 +44,7 @@ class BlockChain {
     constructor() {
         this.chain = [this.createGenesisBlock()];
         this.difficulty = 2;
+        //store transactions in between
         this.pendingTransactions = [];
         this.miningReward = 100;
     }
